@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Identity Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #1a1512;
+            --surface: #2d241e;
+            --primary: #d4a373; /* Coffee Cream */
+            --secondary: #faedcd;
+            --text: #fefae0;
+            --text-muted: #bc6c25;
+            --border: rgba(212, 163, 115, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: var(--surface);
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            min-height: 700px;
+            box-shadow: 0 100px 150px -50px rgba(0,0,0,0.8);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: rgba(0,0,0,0.3);
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+
+        .brand {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 60px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            background: var(--primary);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--bg);
+            margin-bottom: 20px;
+        }
+
+        .nav-link {
+            padding: 15px 0;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            display: block;
+            border-bottom: 1px solid var(--border);
+            transition: 0.3s;
+            background: transparent;
+            border-top: none; border-left: none; border-right: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            padding-left: 10px;
+        }
+
+        /* Content Area */
+        .main { padding: 80px; overflow-y: auto; }
+        .tab-section { display: none; animation: slideUp 0.5s ease; }
+        .tab-section.active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero h1 { font-size: 3.5rem; font-weight: 800; line-height: 1; margin-bottom: 20px; }
+        .hero p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 60px; }
+
+        .claims-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .claims-table th { text-align: left; padding: 15px; border-bottom: 2px solid var(--primary); color: var(--primary); font-size: 0.8rem; text-transform: uppercase; }
+        .claims-table td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+
+        .token-box {
+            margin-top: 40px; padding: 30px; background: rgba(0,0,0,0.2); border-radius: 20px; border: 1px solid var(--border);
+        }
+
+        .btn-logout {
+            margin-top: auto; padding: 18px 40px; background: var(--primary); color: var(--bg); text-decoration: none; border-radius: 20px; font-weight: 800; transition: 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="brand"><span>//</span> SPRING_BOOT</div>
+            <div class="profile">
+                <div class="avatar" th:text="${name.substring(0,1)}">U</div>
+                <h2 th:text="${name}">User Name</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;" th:text="${email}">user@email.com</p>
+            </div>
+            <nav style="margin-top: 40px;">
+                <button onclick="showTab('overview', this)" class="nav-link active">Brewery Overview</button>
+                <button onclick="showTab('claims', this)" class="nav-link">Identity Beans</button>              
+            </nav>
+            <form th:action="@{/logout}" method="post" style="margin-top: auto;">
+                <button type="submit" class="btn-logout" style="border: none; cursor: pointer; width: 100%;">Finalize Session</button>
+            </form>
+        </aside>
+
+        <main class="main">
+            <!-- Overview -->
+            <div id="overview" class="tab-section active">
+                <div class="hero">
+                    <h1>Identity<br>Brewery</h1>
+                    <p>Enterprise OIDC session established. Your authentication context has been successfully migrated to this Java environment.</p>
+                </div>
+                <div style="padding: 30px; background: rgba(212, 163, 115, 0.05); border-radius: 20px; border: 1px solid var(--border);">
+                    <h4 style="color: var(--primary);">System Status</h4>
+                    <p style="margin-top: 10px;">Authenticated via IdentityHub SSL. Session Protection: Active.</p>
+                </div>
+            </div>
+
+            <!-- Claims -->
+            <div id="claims" class="tab-section">
+                <h2 style="margin-bottom: 20px;">Identity Beans</h2>
+                <table class="claims-table">
+                    <thead><tr><th>Claim</th><th>Value</th></tr></thead>
+                    <tbody>
+                        <tr th:each="claim : ${claims}">
+                            <td style="font-family: 'JetBrains Mono', monospace; color: var(--primary);" th:text="${claim.key}">sub</td>
+                            <td th:text="${claim.value}">123456</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+         
+        </main>
+    </div>
+
+    <script>
+        function showTab(tabId, btn) {
+            document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            btn.classList.add('active');
+        }
+    </script>
+</body>
+</html>
