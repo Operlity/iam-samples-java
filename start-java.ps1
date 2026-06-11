@@ -21,7 +21,7 @@ if (-not (Test-Path $KS_PATH)) {
 # 3. Launch Browser
 Start-Job -ScriptBlock { 
     Start-Sleep -Seconds 25 # Java clean build takes longer
-    Start-Process 'https://localhost:4500' 
+    Start-Process 'https://localhost:7284' 
 } | Out-Null
 
 # 4. Clean Build and Run

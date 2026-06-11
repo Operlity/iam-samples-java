@@ -1,8 +1,8 @@
 server:
-  port: 4500
+  port: 7284
   ssl:
     enabled: true
-    key-store: file:d:/Java SpringBoot Web App/keystore.p12
+    key-store: classpath:keystore.p12
     key-store-password: password
     key-store-type: PKCS12
     key-alias: identityhub
@@ -10,21 +10,29 @@ server:
 spring:
   application:
     name: Java SpringBoot Web App
+  datasource:
+    url: jdbc:sqlite:contacts.db
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
   security:
     oauth2:
       client:
         registration:
           identityhub:
-            client-id: ee772e0e-4f95-48a5-8bbb-f2adb0696109
-            client-secret: fU3OTIb4zT0bzyItYvq6gELBF909uiKASDJBHL1M6c8=
-            client-authentication-method: none
+            client-id: 33e1f48d-8071-4f3a-b8b5-3d0948f9a93d
+            client-secret: ICALeUurpuzYfGxh38VJLGeLlC5NtYgCyT+l4/nudfY=
+            client-authentication-method: client_secret_post
             scope: openid,profile,email
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/signin-oidc"
             client-name: IdentityHub
         provider:
           identityhub:
-            issuer-uri: https://id.demo.operlity.com
+            issuer-uri: https://ogsiamapp.azurewebsites.net
             user-name-attribute: preferred_username
 
 logging:
